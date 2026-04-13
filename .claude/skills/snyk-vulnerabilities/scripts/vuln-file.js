@@ -1,7 +1,8 @@
 function extractPackageVulnerabilities(data) {
   const vulnerabilities = {}
+  const projects = Array.isArray(data) ? data : [data]
 
-  data.forEach((project) => {
+  projects.forEach((project) => {
     if (project.vulnerabilities && Array.isArray(project.vulnerabilities)) {
       project.vulnerabilities.forEach((vuln) => {
         if (vuln.id) {
