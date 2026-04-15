@@ -121,12 +121,12 @@ commands:
                   }
 
                   if [ ! -z "${CIRCLE_PULL_REQUEST##*/}" ]; then
-                    # DRAFT=$(curl --silent "https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${CIRCLE_PULL_REQUEST##*/}" | jq '.draft')
+                    DRAFT=$(curl --silent "https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${CIRCLE_PULL_REQUEST##*/}" | jq '.draft')
 
-                    # if [[ "${DRAFT}" == true ]]; then
-                    #   echo "Skipping CI; PR is in draft - to trigger CI , click the 'Trigger Pipeline' button in the CircleCI UI."
-                    #   cancel_build
-                    # fi
+                    if [[ "${DRAFT}" == true ]]; then
+                      echo "Skipping CI; PR is in draft - to trigger CI , click the 'Trigger Pipeline' button in the CircleCI UI."
+                      cancel_build
+                    fi
 
                     echo "Always run CI for PR that is ready for review."
                     exit 0
@@ -154,6 +154,9 @@ jobs:
       docker:
           - image: cimg/base:stable
       resource_class: small
+      environment:
+          PUBLISH_BINARY_BRANCH: << pipeline.parameters.publish-binary-branch >>
+          FORCE_PERSIST_ARTIFACTS: << pipeline.parameters.force-persist-artifacts >>
       steps:
           - cancel-draft-prs
           - checkout:
