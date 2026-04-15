@@ -88,6 +88,7 @@ export class DeferredSourceMapCache {
       // be true. need to use browser's cookiejar instead.
       headers,
       timeout: 5000,
+      resolveWithFullResponse: true,
     }
 
     try {
